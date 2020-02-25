@@ -1,9 +1,9 @@
-<?php if(empty($joke['id']) || $userid == $joke['authorid']): ?>
+<?php if(empty($joke->id) || $userid == $joke->authorid): ?>
 <form action="" method="post">
-  <input type="hidden" name="joke[id]" value="<?=$joke['id'] ?? '' ?>">
+  <input type="hidden" name="joke[id]" value="<?=$joke->id ?? '' ?>">
   <label for="joketext">FMU DATA을 입력해주세요: </label>
   <textarea id="joketext" name="joke[joketext]" rows="3" cols="40">
-  <?=$joke['joketext'] ?? ''?></textarea>
+  <?=$joke->joketext ?? ''?></textarea>
   <input type="submit" name="submit" value="저장">
 </form>
 <?php else: ?>

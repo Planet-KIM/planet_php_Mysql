@@ -19,21 +19,25 @@ class Joke{
     return ['template' => 'home.html.php', 'title' => $title];
   }
 
-
+  //oop도입
+  //1. 데이터베이스에서 모든 유머글을 검색한다.
+  //2. 각 유머글을 반복문에서 차례대로 읽는다.
+  //   - 작성자를 검색한다
+  //   - 글과 작성자 정보가 모두 저장된 새 배열을 생성한다.
+  //3. 배열을 탬플릿으로 전달.
   public function list(){
-    $result = $this->jokesTable->findAll();
+    $jokes = $this->jokesTable->findAll();
 
     $jokes = [];
     foreach($result as $joke){
-      $author = $this->authorsTable->findById($joke['authorid']);
-
+      $author = $this->authorsTable->findById($joke->authorid);
       $jokes[] = [
-        'id' => $joke['id'],
-        'joketext' => $joke['joketext'],
-        'jokedate' => $joke['jokedate'],
-        'name' => $author['name'],
-        'email' => $author['email'],
-        'authorid' => $author['id']
+        'id' => $joke->id,
+        'joketext' => $joke->joketext,
+        'jokedate' => $joke->jokedate,
+        'name' => $author->name,
+        'email' => $author->email
+        //'authorid' => $author['id']
       ];
     }
     $title = '유머 글 목록';
@@ -45,7 +49,7 @@ class Joke{
             'variables' => [
               'totalJokes' => $totalJokes,
               'jokes' => $jokes,
-              'userid' => $author['id'] ?? null
+              'userid' => $author->id ?? null
             ]
           ];
   }
@@ -56,7 +60,7 @@ class Joke{
     $Joke = $this->jokesTable->findById($_POST['id']);
 
     //joke 테이블의 authorid 칼럼값이 로그인 사용자의 id와 다르면  return; 메소드를 즉시 종료하고 나머지 코드 실행않함.
-    if($joke['authorid'] != $author['id']){
+    if($joke->authorid != $author->id){
       return;
     }
 
@@ -67,7 +71,18 @@ class Joke{
 
   public function saveEdit(){
 
+    //$author = $this->authentication->getUser();
+    //$authorObject = new \Ijdb\Entity\Author($this->jokesTable);
+
+    //배열데이터를 객체로 그저 복사하지 않기 위해서 수정합니다.
     $author = $this->authentication->getUser();
+
+    //베열데이터를 객체로 복사하는 코드입니다. 이는 코드도 길어지고 비효율적입니다.
+    /*$authorObject->id = $author['id'];
+    $authorObject->name = $author['name'];
+    $authorObject->email = $author['email'];
+    $authorObject->password = $author['password'];*/
+
 
     if(isset($_GET['id'])){
       $joke = $this->jokesTable->findById($_GET['id']);
@@ -79,11 +94,12 @@ class Joke{
 
     $joke = $_POST['joke'];
     $joke['jokedate'] = new \DateTime();
-    $joke['authorid'] = $author['id'];
+    //$joke['authorid'] = $author['id'];
 
-    $this->jokesTable->save($joke);
+    //$this->jokesTable->save($joke);
+    $author->addJoke($joke);
 
-    //돌아갈 폼 양식입니다. 
+    //돌아갈 폼 양식입니다.
     header('location: /joke/list');
   }
 
@@ -112,7 +128,7 @@ class Joke{
             'title' => $title,
             'variables' => [
               'joke' => $joke ?? null,
-              'userid' => $author['id'] ?? null
+              'userid' => $author->id ?? null
               ]
             ];
   }
