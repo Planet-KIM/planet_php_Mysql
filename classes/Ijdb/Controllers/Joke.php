@@ -117,6 +117,8 @@ class Joke{
     //$this->jokesTable->save($joke);
     $jokeEntity = $author->addJoke($joke);
 
+    $jokeEntity->clearCategories();
+
     foreach($_POST['category'] as $categoryid){
       $jokeEntity->addCategory($categoryid);
     }

@@ -35,4 +35,20 @@ class Joke{
     $this->jokeCategoriesTable->save($jokeCat);
   }
 
+  //유머글을 저장할 때  선택했던 카테고리를 체크하기 위한 메소드입니다.
+  public function hasCategory($categoryid){
+    $jokeCategories = $this->jokeCategoriesTable->find('jokeid', $this->id);
+
+    foreach($jokeCategories as $jokeCategory){
+      if($jokeCategory->categoryid == $categoryid){
+        return true;
+      }
+    }
+  }
+
+  //특정 유머글에 카테고리 정보를 모두 제거.
+  public function clearCategories(){
+    $this->jokeCategoriesTable->deleteWhere('jokeid', $this->id);
+  }
+
 }

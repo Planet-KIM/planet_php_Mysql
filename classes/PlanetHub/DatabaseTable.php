@@ -316,4 +316,15 @@ class DatabaseTable
     return $entity;
   }
 
+  //jokecategory 테이블은 기본키가 jokeid / categoryid가 쌍이므로 delete()를 사용할 수 없어서 만든 것
+  public function deleteWhere($column, $value){
+    $query = 'DELETE FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
+
+    $parameters = [
+      'value' => $value
+    ];
+
+    $query = $this->query($query, $parameters);
+  }
+
 }
