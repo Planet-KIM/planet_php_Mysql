@@ -9,14 +9,19 @@ class IjdbRoutes implements \PlanetHub\Routes{
 
   private $authorsTable;
   private $jokesTable;
+  private $categoriesTable;
   private $authentication;
+  private $jokeCategoriesTable; //jokecategory table에 레코드를 추가하기 위한 DatabaseTable 인스턴스
 
   public function __construct(){
     include __DIR__ . '/../../includes/DatabaseConnection.php';
 
-    $this->jokesTable = new \PlanetHub\DatabaseTable($pdo, 'joke', 'id');
-    $this->authorsTable = new \PlanetHub\DatabaseTable($pdo, 'author', 'id');
+    //순환 의존 구조를 해결하기 위한 참조변수 &$
+    $this->jokesTable = new \PlanetHub\DatabaseTable($pdo, 'joke', 'id', '\Ijdb\Entity\Joke', [&$this->authorsTable, &$this->jokeCategoriesTable]);
+    $this->authorsTable = new \PlanetHub\DatabaseTable($pdo, 'author', 'id', '\Ijdb\Entity\Author', [&$this->jokesTable]);
+    $this->categoriesTable = new \PlanetHub\DatabaseTable($pdo, 'category', 'id', '\Ijdb\Entity\Category', [&$this->jokesTable, &$this->jokeCategoriesTable]);
     $this->authentication = new \PlanetHub\Authentication($this->authorsTable, 'email', 'password');
+    $this->jokeCategoriesTable = new \PlanetHub\DatabaseTable($pdo, 'jokecategory', 'categoryid');
   }
 
   public function getRoutes(): array
@@ -24,10 +29,11 @@ class IjdbRoutes implements \PlanetHub\Routes{
     include __DIR__. '/../../includes/DatabaseConnection.php';
     //include __DIR__. '/../classes/DatabaseTable.php';
 
-    $jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable, $this->authentication);
+    $jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable, $this->categoriesTable, $this->authentication);
     $authorController = new \Ijdb\Controllers\Register($this->authorsTable);
 
     $loginController = new \Ijdb\Controllers\Login($this->authentication);
+    $categoryController = new \Ijdb\Controllers\category($this->categoriesTable);
 
     $routes = [
   			'author/register' => [
@@ -46,6 +52,31 @@ class IjdbRoutes implements \PlanetHub\Routes{
   					'action' => 'success'
   				]
   			],
+        'category/list' => [
+          'GET' => [
+            'controller' => $categoryController,
+            'action' => 'list'
+          ],
+          'login' => true
+        ],
+        'category/edit' => [
+          'POST' => [
+            'controller' => $categoryController,
+            'action' => 'saveEdit'
+          ],
+          'GET' => [
+            'controller' => $categoryController,
+            'action' => 'edit'
+          ],
+          'login' => true
+        ],
+        'category/delete' => [
+          'POST' => [
+            'controller' => $categoryController,
+            'action' => 'delete'
+          ],
+          'login' => true
+        ],
   			'joke/edit' => [
   				'POST' => [
   					'controller' => $jokeController,

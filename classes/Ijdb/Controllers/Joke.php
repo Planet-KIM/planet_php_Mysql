@@ -6,10 +6,15 @@ use \PlanetHub\Authentication;
 class Joke{
   private $authorsTable;
   private $jokesTable;
+  private $categoriesTable;
+  private $authentication;
 
-  public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, Authentication $authentication){
+  public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable,
+   DatabaseTable $categoriesTable, Authentication $authentication)
+   {
     $this->jokesTable = $jokesTable;
     $this->authorsTable = $authorsTable;
+    $this->categoriesTable = $categoriesTable;
     $this->authentication =$authentication;
   }
 
@@ -26,11 +31,19 @@ class Joke{
   //   - 글과 작성자 정보가 모두 저장된 새 배열을 생성한다.
   //3. 배열을 탬플릿으로 전달.
   public function list(){
-    $jokes = $this->jokesTable->findAll();
 
-    $jokes = [];
+    if(isset($_GET['category'])){
+      $category = $this->categoriesTable->findById($_GET['category']);
+      $jokes = $category->getJokes();
+    }
+    else{
+      $jokes = $this->jokesTable->findAll();
+    }
+
+    /*$jokes = [];
     foreach($result as $joke){
       $author = $this->authorsTable->findById($joke->authorid);
+
       $jokes[] = [
         'id' => $joke->id,
         'joketext' => $joke->joketext,
@@ -39,17 +52,20 @@ class Joke{
         'email' => $author->email
         //'authorid' => $author['id']
       ];
-    }
+    }*/
     $title = '유머 글 목록';
 
     $totalJokes = $this->jokesTable->total();
+
+    $author = $this->authentication->getUser();
 
     return ['template' => 'jokes.html.php',
             'title' => $title,
             'variables' => [
               'totalJokes' => $totalJokes,
               'jokes' => $jokes,
-              'userid' => $author->id ?? null
+              'userid' => $author->id ?? null,
+              'categories' => $this->categoriesTable->findAll()
             ]
           ];
   }
@@ -69,8 +85,10 @@ class Joke{
     header('location: /joke/list');
   }
 
+  /*$_POST에서 유머글 데이터를 가져옴.
+  Author Entity class의 addJoke()메소드에 전달하고 글을 등록.
+  findById() 메소드로 데이터베이스에 SELECT Query를 전달하고 방급 등록된 유머글을 검색. */
   public function saveEdit(){
-
     //$author = $this->authentication->getUser();
     //$authorObject = new \Ijdb\Entity\Author($this->jokesTable);
 
@@ -86,7 +104,7 @@ class Joke{
 
     if(isset($_GET['id'])){
       $joke = $this->jokesTable->findById($_GET['id']);
-      if($joke['authorid'] != $author['id']){
+      if($joke->authorid != $author->id){
         return;
         //제출된 폼 데이터를 처리하기 전에 사용자 검사 기능을 추가해야한다.
       }
@@ -97,7 +115,11 @@ class Joke{
     //$joke['authorid'] = $author['id'];
 
     //$this->jokesTable->save($joke);
-    $author->addJoke($joke);
+    $jokeEntity = $author->addJoke($joke);
+
+    foreach($_POST['category'] as $categoryid){
+      $jokeEntity->addCategory($categoryid);
+    }
 
     //돌아갈 폼 양식입니다.
     header('location: /joke/list');
@@ -117,6 +139,7 @@ class Joke{
     else{
     }*/
     $author = $this->authentication->getUser();
+    $categories = $this->categoriesTable->findAll();
 
     if(isset($_GET['id'])){
       $joke = $this->jokesTable->findById($_GET['id']);
@@ -128,7 +151,8 @@ class Joke{
             'title' => $title,
             'variables' => [
               'joke' => $joke ?? null,
-              'userid' => $author->id ?? null
+              'userid' => $author->id ?? null,
+              'categories' => $categories
               ]
             ];
   }

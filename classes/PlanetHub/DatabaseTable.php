@@ -227,6 +227,8 @@ class DatabaseTable
       $fields = $this->processDates($fields);
 
       $this->query($query, $fields);
+
+      return $this->pdo->lastInsertId();
   }
 
   private function update($fields){
@@ -285,16 +287,33 @@ class DatabaseTable
   // 다은 try.. catch 문을 함수로 선언하기 위한 것입니다.
   // 이를 이용하면 adojoke 항목이 없어도 됩니다.
   public function save($record){
+
+    $entity = new $this->className(...$this->constructorArgs);
+
     try{
       if($record[$this->primaryKey] == ''){
         $record[$this->primaryKey] = null;
       }
-      $this->insert($record);
+
+      //반환된 id를 이용하여서 entity 객체의 기본키 설정.
+      $insertId = $this->insert($record);
+
+      $entity->{$this->primaryKey} = $insertId;
     }
     //지정한 id로 등록된 글 데이터가 있으면 '중복키 오류가 발생하고 update구문이 실행.'
     catch(\PDOException $e){
       $this->update($record);
     }
+
+    foreach($record as $key => $value){
+      //entity에 설정된 값이 null로 바뀌지 않도록 보호...
+      if(!empty($value)){
+        //각 칼럼명과 값을 차례대로 $key와 $value에 할당. ex) joketext / 'test!'
+        $entity->$key = $value;
+      }
+    }
+
+    return $entity;
   }
 
 }

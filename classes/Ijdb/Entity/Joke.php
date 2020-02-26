@@ -9,10 +9,13 @@ class Joke{
   public $joketext;
   private $authorsTable;
   private $author;
+  private $jokeCategoriesTable;
 
-  public function __construct(\PlanetHub\DatabaseTable $authorsTable){
+  public function __construct(\PlanetHub\DatabaseTable $authorsTable,
+      \PlanetHub\DatabaseTable $jokeCategoriesTable){
 
     $this->authorsTable = $authorsTable;
+    $this->jokeCategoriesTable = $jokeCategoriesTable;
   }
 
   //현재 유머글의 작성자를 반환
@@ -24,6 +27,12 @@ class Joke{
       $this->author = $this->authorsTable->findById($this->authorid);
     }
     return $this->author;
+  }
+
+  public function addCategory($categoryid){
+    $jokeCat = ['jokeid' => $this->id, 'categoryid' => $categoryid];
+
+    $this->jokeCategoriesTable->save($jokeCat);
   }
 
 }

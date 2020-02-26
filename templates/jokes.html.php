@@ -1,3 +1,11 @@
+<div class="jokelist">
+<ul class="categories">
+  <?php foreach($categories ans $category): ?>
+  <li><a href="/joke/list?category=<?=$category->id?>"><?=$category->name?></a><li>
+  <?php endforeach; ?>
+</ul>
+
+<div class="jokes">
 <p><?=$variables['totalJokes']?>개 FMU DATA가 있습니다.</p>
 <?php foreach($jokes as $joke): ?>
 <blockquote>
@@ -21,3 +29,4 @@
   </p>
 </blockquote>
 <?php endforeach; ?>
+</div>
