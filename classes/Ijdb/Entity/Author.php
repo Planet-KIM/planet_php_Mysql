@@ -2,6 +2,13 @@
 namespace Ijdb\Entity;
 
 class Author{
+  const EDIT_JOKES = 1;
+  const DELETE_JOKES = 2;
+  const LIST_CATEGORIES = 4;
+  const EDIT_CATEGORIES = 8;
+  const REMOVE_CATEGORIES = 16;
+  const EDIT_USER_ACCESS = 32;
+
 
   public $id;
   public $name;
@@ -32,6 +39,20 @@ class Author{
 
     // 두번쨰 방법....
     return $this->jokesTable->save($joke);
+  }
+
+  public function hasPermission($permission){
+    /*$permissions = $this->userPermissionsTable->find('authorid', $this->id);
+
+    foreach($permissions as $permission){
+      if($permission->permission == $permission){
+        return true;
+      }
+    }*/ //solution 1
+
+    //solution 2
+    return $this->permissions & $permission;
+
   }
 
 

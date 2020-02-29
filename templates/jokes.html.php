@@ -1,6 +1,6 @@
 <div class="jokelist">
 <ul class="categories">
-  <?php foreach($categories ans $category): ?>
+  <?php foreach($categories as $category): ?>
   <li><a href="/joke/list?category=<?=$category->id?>"><?=$category->name?></a><li>
   <?php endforeach; ?>
 </ul>
@@ -19,13 +19,17 @@
    <?php
       $date = new DateTime($joke->jokedate);
       echo $date->format('jS F Y');  ?>)
-  <?php if($userid == $joke->authorid): ?>
-    <a href="/joke/edit?id=<?=$joke->id?>">수정</a></p>
-    <form action="/joke/delete" method="post">
-      <input type="hidden" name="id" value="<?=$joke->id?>">
-      <input type="submit" value="삭제">
-    </form>
-  <?php endif; ?>
+      <?php if ($user): ?>
+        <?php if($user->id == $joke->authorid || $user->hasPermission(\Ijdb\Entity\Author::EDIT_JOKES)): ?>
+          <a href="/joke/edit?id=<?=$joke->id?>">수정</a></p>
+        <?php endif; ?>
+        <?php if($user->id == $joke->authorid || $user->hasPermission(\Ijdb\Entity\Author::DELETE_JOKES)): ?>
+          <form action="/joke/delete" method="post">
+            <input type="hidden" name="id" value="<?=$joke->id?>">
+            <input type="submit" value="삭제">
+          </form>
+        <?php endif; ?>
+      <?php endif; ?>
   </p>
 </blockquote>
 <?php endforeach; ?>

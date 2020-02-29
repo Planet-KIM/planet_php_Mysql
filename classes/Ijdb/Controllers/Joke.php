@@ -64,7 +64,7 @@ class Joke{
             'variables' => [
               'totalJokes' => $totalJokes,
               'jokes' => $jokes,
-              'userid' => $author->id ?? null,
+              'user' => $author,  //기존코드 : 'userid' => $author->id ?? null,
               'categories' => $this->categoriesTable->findAll()
             ]
           ];
@@ -76,7 +76,7 @@ class Joke{
     $Joke = $this->jokesTable->findById($_POST['id']);
 
     //joke 테이블의 authorid 칼럼값이 로그인 사용자의 id와 다르면  return; 메소드를 즉시 종료하고 나머지 코드 실행않함.
-    if($joke->authorid != $author->id){
+    if($joke->authorid != $author->id && !$author->hasPermission(\Ijdb\Entity\Author::DELETE_JOKES)){
       return;
     }
 
@@ -153,7 +153,7 @@ class Joke{
             'title' => $title,
             'variables' => [
               'joke' => $joke ?? null,
-              'userid' => $author->id ?? null,
+              'user' => $author, //'userid' => $author->id ?? null,(원코드)
               'categories' => $categories
               ]
             ];

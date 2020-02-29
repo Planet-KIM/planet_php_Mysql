@@ -5,4 +5,5 @@ namespace PlanetHub;
 interface Routes{
   public function getRoutes(): array;
   public function getAuthentication(): \PlanetHub\Authentication; //지정한 타입을 반환시키기 위한 타입힌트로 부과적인 안전장치 생성.
+  public function checkPermission($permission): bool;
 }

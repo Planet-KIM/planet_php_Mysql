@@ -80,4 +80,44 @@ class Register{
     return ['template' => 'registersuccess.html.php',
             'title' => '등록 성공'];
   }
+  
+  //등록된 사용자 목록을 가져와 탬플릿으로 전달....
+  public function list(){
+    $authors = $this->authorsTable->findAll();
+    
+    return ['template' => 'authorlist.html.php',
+            'title' => '사용자 목록',
+            'variables' => [
+              'authors' => $authors
+            ]
+          ];
+  }
+  
+  public function permissions(){
+    $author = $this->authorsTable->findById($_GET['id']);
+    
+    $reflected = new \ReflectionClass('\Ijdb\Entity\Author');
+    $constants = $reflected->getConstants();
+    
+    return ['template' => 'permissions.html.php',
+            'title' => '권한 수정',
+            'variables' => [
+                'author' => $author,
+                'permissions' => $constants
+              ]
+            ];
+  }
+  
+  //선택한 체크박스 값을 모두 합산하고 사용자 권한을 이진 구조로 표현.
+  public function savePermissions(){
+    $author = [
+      'id' => $_GET['id'],
+      //아무권한도 선택하지 않으면 키가 없기에 빈배열을 자동으로 할당 
+      'permissions' => array_sum($_POST['permissions'] ?? []) //arry_sum() 모든 배열 원소의 합을 계산.
+    ];
+    
+    $this->authorsTable->save($author);
+    
+    header('location: /author/list');
+  }
 }

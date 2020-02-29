@@ -1,4 +1,4 @@
-<?php if(empty($joke->id) || $userid == $joke->authorid): ?>
+<?php if(empty($joke->id) || $user->id == $joke->authorid || $user->hasPermission(\Ijdb\Entity\Author::EDIT_JOKES)): ?>
 <form action="" method="post">
   <input type="hidden" name="joke[id]" value="<?=$joke->id ?? '' ?>">
   <label for="joketext">FMU DATA을 입력해주세요: </label>
