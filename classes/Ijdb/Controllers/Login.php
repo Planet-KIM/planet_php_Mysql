@@ -36,7 +36,8 @@ class Login {
 	}
 
 	public function logout() {
-		unset($_SESSION);
+		//unset($_SESSION);// 이방법을 사용한면 SESSION값이 초기화되지 않음.. 잘못된 방법.
+		session_unset(); //이방법을 이용하면 깔끔하게 세션의 값을 초기화합니다.
 		return ['template' => 'logout.html.php', 'title' => '로그아웃 되었습니다'];
 	}
 }
