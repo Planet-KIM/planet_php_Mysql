@@ -202,7 +202,7 @@ class DatabaseTable
   public function delete($id){
     $parameters = [':id' => $id];
 
-    $this->query($pdo, 'DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
+    $this->query('DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id', $parameters);
   }
 
   private function insert($fields){
