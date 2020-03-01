@@ -21,10 +21,12 @@ class Authentication{
 
     $user = $this->users->find($this->usernameColumn, strtolower($username));
 
-    if(!empty($user) && password_verify($password, $user[0][$this->passwordColumn])){
+    if(!empty($user) && password_verify($password, $user[0]->{$this->passwordColumn})){
       session_regenerate_id(); //해당 사용자에게 임의의 신규 세션ID가 할당됩니다.
       $_SESSION['username'] = $username;
-      $_SESSION['password'] = $user[0][$this->passwordColumn];
+      //중괄호로 묶으면  php언어는 괄호 안을 먼저 해석합니다.
+      //비밀번호 칼럼을 먼저 읽고 $user[0]에서 해당 속성명을 찾으므로 결과를 얻을 수 있습니다.
+      $_SESSION['password'] = $user[0]->{$this->passwordColumn};
       return true;
     }
     else{
@@ -42,7 +44,9 @@ class Authentication{
 
     $user = $this->users->find($this->usernameColumn, strtolower($_SESSION['username']));
 
-    if(!empty($user) && $user[0][$this->passwordColumn] === $_SESSION['password']){
+    //$passwordColumn = $this->passwordColumn;
+
+    if(!empty($user) && $user[0]->{$this->passwordColumn} === $_SESSION['password']){
       return true;
     }
     else{
