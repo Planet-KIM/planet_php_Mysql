@@ -38,10 +38,12 @@ class Joke{
 
     if(isset($_GET['category'])){
       $category = $this->categoriesTable->findById($_GET['category']);
-      $jokes = $category->getJokes();
+      $jokes = $category->getJokes(10, $offset);
+      $totalJokes = $category->getNumJokes();
     }
     else{
       $jokes = $this->jokesTable->findAll('jokedate DESC', 10, $offset);
+      $totalJokes = $this->jokesTable->total();
     }
 
     /*$jokes = [];
@@ -59,7 +61,7 @@ class Joke{
     }*/
     $title = '유머 글 목록';
 
-    $totalJokes = $this->jokesTable->total();
+    //$totalJokes = $this->jokesTable->total();
 
     $author = $this->authentication->getUser();
 
@@ -70,7 +72,8 @@ class Joke{
               'jokes' => $jokes,
               'user' => $author,  //기존코드 : 'userid' => $author->id ?? null,
               'categories' => $this->categoriesTable->findAll(),
-              'currentPage' => $page
+              'currentPage' => $page,
+              'categoryid' => $_GET['category'] ?? null //카테고리 정보를 전달 (링크 URL에 카테고리 변수를 추가하기 위해서..)
             ]
           ];
   }

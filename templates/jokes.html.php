@@ -43,9 +43,13 @@ $numPages = ceil($totalJokes/10);
 //각 페이지 링크 표시
 for($i = 1; $i <=$numPages; $i++):
   if($i == $currentPage): ?>
-  <a class="currentPage" href="/joke/list?page=<?=$i?>"><?=$i?></a>
+  <a class="currentPage" href="/joke/list?page=<?=$i?><?=!empty($categoryid)
+  ? '&category=' . $categoryid : '' ?>">
+  <?=$i?></a>
 <?php else: ?>
-  <a href="/joke/list?page=<?=$i?>"><?=$i?></a>
+  <a href="/joke/list?page=<?=$i?><?=!empty($categoryid) ? '&category' .
+  $categoryid : '' ?>">
+  <?=$i?></a>
 <?php endif; ?>
 <?php endfor; ?>
 </div>
