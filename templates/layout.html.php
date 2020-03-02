@@ -14,7 +14,6 @@
         <li><a href="/">HOME</a></li>
         <li><a href="/joke/list">FMU DATA CONTENT</a></li>
         <li><a href="/joke/edit">FMU CONTENT REGISTER</a></li>
-        <?php echo $loggedIn ?>
         <?php if($loggedIn): ?>
         <li><a href="/logout">LOGOUT</a></li>
         <?php else: ?>
