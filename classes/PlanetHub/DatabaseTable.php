@@ -192,8 +192,14 @@ class DatabaseTable
   }
 
   //table을 찾기 위한 함수입니다.
-  public function findAll(){
-    $result = $this->query('SELECT * FROM ' . $this->table);
+  public function findAll($orderBy = null){
+    $query = 'SELECT * FROM ' . $this->table;
+
+    if($orderBy != null){
+      $query .= ' ORDER BY ' . $orderBy;
+    }
+
+    $result = $this->query($query);
 
     return $result->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
   }
@@ -262,12 +268,16 @@ class DatabaseTable
     return $query->fetchObject($this->className, $this->constructorArgs);
   }
 
-  public function find($column, $value){
+  public function find($column, $value, $orderBy = null){
     $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
 
     $parameters = [
       'value' => $value
     ];
+    
+    if($orderBy != null){
+      $query .= ' ORDER BY ' . $orderBy;
+    }
 
     $query = $this->query($query, $parameters);
 
