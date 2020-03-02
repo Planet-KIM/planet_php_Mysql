@@ -10,9 +10,9 @@
 
 <?php foreach($jokes as $joke): ?>
 <blockquote>
-  
+
   <?=(new \PlanetHub\Markdown($joke->joketext))->toHtml()?>
-  
+
   (작성자: <a href="mailto:
   <?=htmlspecialchars($joke->getAuthor()->email, ENT_QUOTES, 'UTF-8'); ?>">
   <?=htmlspecialchars($joke->getAuthor()->name, ENT_QUOTES, 'UTF-8'); ?></a>
@@ -31,7 +31,21 @@
           </form>
         <?php endif; ?>
       <?php endif; ?>
-  
+
 </blockquote>
 <?php endforeach; ?>
+
+페이지 선택:
+<?php
+//페이지 수를 계산해야합니다.
+$numPages = ceil($totalJokes/10);
+
+//각 페이지 링크 표시
+for($i = 1; $i <=$numPages; $i++):
+  if($i == $currentPage): ?>
+  <a class="currentPage" href="/joke/list?page=<?=$i?>"><?=$i?></a>
+<?php else: ?>
+  <a href="/joke/list?page=<?=$i?>"><?=$i?></a>
+<?php endif; ?>
+<?php endfor; ?>
 </div>

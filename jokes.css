@@ -51,5 +51,23 @@ input[type="checkbox"] + label {clear: right;}
 .categories li {margin-bottom: 1em;}
 .jokelist .jokes {display: table-cell; padding: 1em;}
 
-.authorlist td {color: red; border: 1px;}
-.authorlist th {color:white; border: 3px;}
+.authorlist h2 {color: black; border: 3px; width:30%; font-size: 2em;}
+.authorlist tr {color: black; border: 2px; margin:3em;}
+.authorlist td {
+  font-size: 1em; font-family: Arial;
+  color: black; background-color: #565;
+  border: 1px;
+  margin: 3em; margin-top:3em; padding: 1em;
+}
+.authorlist th {
+  font-size:1em; font-family: Arial;
+  color:black; background-color: lightyellow;
+  border: 3px; margin: 3em;
+}
+
+.currentPage:before {
+  content: "[";
+}
+.currentPage:after {
+  content: "]";
+}

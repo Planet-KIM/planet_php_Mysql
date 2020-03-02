@@ -17,7 +17,7 @@
 
    public function getJokes(){
 
-     $jokeCategories = $this->jokeCategoriesTable->find('categoryid', $this->id);
+     $jokeCategories = $this->jokeCategoriesTable->find('categoryid', $this->id, null, 10);
      $jokes = [];
 
      foreach($jokeCategories as $jokeCategory){

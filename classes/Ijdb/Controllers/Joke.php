@@ -32,12 +32,16 @@ class Joke{
   //3. 배열을 탬플릿으로 전달.
   public function list(){
 
+    $page = $_GET['page'] ?? 1;
+
+    $offset = ($page-1) * 10;
+
     if(isset($_GET['category'])){
       $category = $this->categoriesTable->findById($_GET['category']);
       $jokes = $category->getJokes();
     }
     else{
-      $jokes = $this->jokesTable->findAll('jokedate DESC');
+      $jokes = $this->jokesTable->findAll('jokedate DESC', 10, $offset);
     }
 
     /*$jokes = [];
@@ -65,7 +69,8 @@ class Joke{
               'totalJokes' => $totalJokes,
               'jokes' => $jokes,
               'user' => $author,  //기존코드 : 'userid' => $author->id ?? null,
-              'categories' => $this->categoriesTable->findAll()
+              'categories' => $this->categoriesTable->findAll(),
+              'currentPage' => $page
             ]
           ];
   }
