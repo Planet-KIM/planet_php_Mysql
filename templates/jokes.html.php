@@ -7,11 +7,12 @@
 
 <div class="jokes">
 <p><?=$variables['totalJokes']?>개 FMU DATA가 있습니다.</p>
+
 <?php foreach($jokes as $joke): ?>
 <blockquote>
-  <p>
-  <?=htmlspecialchars($joke->joketext, ENT_QUOTES, 'UTF-8')?>
-  <p>
+  
+  <?=(new \PlanetHub\Markdown($joke->joketext))->toHtml()?>
+  
   (작성자: <a href="mailto:
   <?=htmlspecialchars($joke->getAuthor()->email, ENT_QUOTES, 'UTF-8'); ?>">
   <?=htmlspecialchars($joke->getAuthor()->name, ENT_QUOTES, 'UTF-8'); ?></a>
@@ -21,7 +22,7 @@
       echo $date->format('jS F Y');  ?>)
       <?php if ($user): ?>
         <?php if($user->id == $joke->authorid || $user->hasPermission(\Ijdb\Entity\Author::EDIT_JOKES)): ?>
-          <a href="/joke/edit?id=<?=$joke->id?>">수정</a></p>
+          <a href="/joke/edit?id=<?=$joke->id?>">수정</a>
         <?php endif; ?>
         <?php if($user->id == $joke->authorid || $user->hasPermission(\Ijdb\Entity\Author::DELETE_JOKES)): ?>
           <form action="/joke/delete" method="post">
@@ -30,7 +31,7 @@
           </form>
         <?php endif; ?>
       <?php endif; ?>
-  </p>
+  
 </blockquote>
 <?php endforeach; ?>
 </div>
