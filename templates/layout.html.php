@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/jokes.css">
+    <link rel="stylesheet" href="/templates/stylesheets/jokes.css">
     <title><?=$title?></title>
   </head>
   <body>

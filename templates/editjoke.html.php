@@ -1,8 +1,9 @@
+<div editjoke>
 <?php if(empty($joke->id) || $user->id == $joke->authorid || $user->hasPermission(\Ijdb\Entity\Author::EDIT_JOKES)): ?>
 <form action="" method="post">
   <input type="hidden" name="joke[id]" value="<?=$joke->id ?? '' ?>">
   <label for="joketext">FMU DATA을 입력해주세요: </label>
-  <textarea id="joketext" name="joke[joketext]" rows="3" cols="40">
+  <textarea class="editTextArea" id="joketext" name="joke[joketext]" rows="4" style="width:95%;">
   <?=$joke->joketext ?? ''?></textarea>
 
   <p>유머 카테고리 선택:</p>
@@ -22,3 +23,4 @@
 <p>자신이 작성한 데이터만 수정할 수 있습니다.</p>
 
 <?php endif; ?>
+</div>
